@@ -68,12 +68,30 @@ PHASE 3 — QA & TESTING
   loop until both green-light
 ```
 
-You assign roles to your agents. Example:
+You assign roles to your agents in `pio/STATUS.md`. Roles are fully flexible — edit the Role Assignment table to match your setup before starting.
+
+**Example — two agents:**
 
 | Agent | Role |
 |---|---|
 | Claude Code | Planner + Coder |
 | Codex | Reviewer + Tester |
+
+**Example — three agents:**
+
+| Agent | Role |
+|---|---|
+| Claude Code | Planner + Coder |
+| Codex | Reviewer |
+| Gemini CLI | Tester |
+
+**Example — solo (one agent does everything):**
+
+| Agent | Role |
+|---|---|
+| Claude Code | Planner + Coder + Reviewer + Tester |
+
+There is no enforcement — any agent can run any command at any time. The role table is read by each agent at the start of a session so it knows how to behave. Change it whenever your setup changes.
 
 ---
 
