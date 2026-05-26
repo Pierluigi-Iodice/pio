@@ -67,10 +67,11 @@ ${bold('Usage:')}
   npx pio-installer --help     Show this help
 
 ${bold('What it creates:')}
-  ./pio/        Status, roles, handoff templates, archive
-  ./CLAUDE.md   PIO commands for Claude Code  (merged if file exists)
-  ./CODEX.md    PIO commands for Codex        (merged if file exists)
-  ./GEMINI.md   PIO commands for Gemini CLI   (merged if file exists)
+  ./pio/                    Status, roles, handoff templates, archive
+  ./.claude/commands/pio/   Native /pio:* slash commands for Claude Code
+  ./CLAUDE.md               PIO context for Claude Code  (merged if file exists)
+  ./CODEX.md                PIO commands for Codex       (merged if file exists)
+  ./GEMINI.md               PIO commands for Gemini CLI  (merged if file exists)
 
 ${bold('Merge behaviour:')}
   If CLAUDE.md / CODEX.md / GEMINI.md already exist in the project:
@@ -235,7 +236,23 @@ function installPio() {
     );
   }
 
-  // 7 -- done
+  // 7 -- Claude Code slash commands (.claude/commands/pio/)
+  const CLAUDE_COMMANDS_DIR = path.join(TARGET_DIR, '.claude', 'commands', 'pio');
+  createDir(path.join(TARGET_DIR, '.claude'));
+  createDir(path.join(TARGET_DIR, '.claude', 'commands'));
+  createDir(CLAUDE_COMMANDS_DIR);
+  for (const cmd of [
+    'status.md', 'plan.md', 'review.md', 'accept.md', 'applyreview.md',
+    'greenlight.md', 'develop.md', 'reviewcode.md', 'fix.md',
+    'testplan.md', 'runtest.md', 'reviewtest.md', 'bugfix.md', 'archive.md',
+  ]) {
+    copyFile(
+      path.join(TEMPLATES_DIR, 'commands', 'pio', cmd),
+      path.join(CLAUDE_COMMANDS_DIR, cmd)
+    );
+  }
+
+  // 8 -- done
   if (DRY_RUN) {
     const sep = gray(U.hline.repeat(54));
     console.log(`\n${sep}`);
