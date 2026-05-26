@@ -43,7 +43,7 @@ The mechanism is simple: two different AI perspectives, zero shared context, str
 npx pio-installer@latest
 ```
 
-Run this in any project directory. PIO creates `./pio/` and merges `/pio:*` commands into `CLAUDE.md`, `CODEX.md`, and `GEMINI.md`.
+Run this in any project directory. PIO is **non-destructive** — it creates new files only and never modifies your existing project files.
 
 ---
 
@@ -161,10 +161,7 @@ The `roles/` files are plain markdown — edit them to match your stack:
 
 ```
 your-project/
-├── CLAUDE.md              ← PIO context for Claude Code
-├── CODEX.md               ← PIO context for Codex
-├── AGENTS.md              ← PIO agent instructions for Codex
-├── GEMINI.md              ← PIO context for Gemini CLI
+├── AGENTS.md              ← Codex agent instructions (created if missing)
 ├── .claude/
 │   └── commands/pio/      ← /pio:* native slash commands (Claude Code)
 ├── .codex/
@@ -185,6 +182,8 @@ your-project/
     ├── handoff/           ← active session files
     └── archive/           ← completed sessions
 ```
+
+> **Non-destructive:** PIO never touches `CLAUDE.md`, `CODEX.md`, `GEMINI.md` or any other existing file. All PIO artifacts live in `pio/`, `.claude/commands/pio/`, `.codex/skills/pio-*/`, and `AGENTS.md` (created only if absent).
 
 ---
 

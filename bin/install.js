@@ -33,7 +33,7 @@ const U = {
   h:     supportsUnicode ? '═' : '=',
   v:     supportsUnicode ? '║' : '|',
   hline: supportsUnicode ? '─' : '-',
-  arrow: supportsUnicode ? '->' : '->',   // same in both; kept for symmetry
+  arrow: '->',
 };
 
 // ─── ANSI color helpers (no external dependencies) ───────────────────────────
@@ -70,15 +70,12 @@ ${bold('What it creates:')}
   ./pio/                    Status, roles, handoff templates, archive
   ./.claude/commands/pio/   Native /pio:* slash commands for Claude Code
   ./.codex/skills/pio-*/    Native /prompts:pio-* skills for Codex
-  ./CLAUDE.md               PIO context for Claude Code  (merged if file exists)
-  ./CODEX.md                PIO context for Codex        (merged if file exists)
-  ./AGENTS.md               PIO context for Codex agents (merged if file exists)
-  ./GEMINI.md               PIO context for Gemini CLI   (merged if file exists)
+  ./AGENTS.md               Codex agent instructions (created only if missing)
 
-${bold('Merge behaviour:')}
-  If CLAUDE.md / CODEX.md / GEMINI.md already exist in the project:
-    - No PIO block found  ${U.arrow} PIO content appended at the end of the file
-    - PIO block found     ${U.arrow} warning + skip  (use --force to replace the block)
+${bold('Non-destructive:')}
+  PIO does not modify CLAUDE.md, CODEX.md, GEMINI.md or any other
+  existing project file. Only files inside ./pio/, ./.claude/commands/pio/,
+  ./.codex/skills/pio-*/ and AGENTS.md are touched.
 
 ${gray(sep)}
 `);
@@ -88,9 +85,7 @@ ${gray(sep)}
 // ─── Log helpers ──────────────────────────────────────────────────────────────
 const log = {
   created: (r) => console.log(`  ${green(CHECK)} Created: ${cyan(r)}`),
-  merged:  (r) => console.log(`  ${green(CHECK)} Merged:  ${cyan(r)}  ${gray('(PIO block appended)')}`),
-  updated: (r) => console.log(`  ${green(CHECK)} Updated: ${cyan(r)}  ${gray('(PIO block replaced)')}`),
-  skipped: (r) => console.log(`  ${yellow(WARN)} Skipped: ${cyan(r)}  ${gray('(already installed -- use --force to update)')}`),
+  skipped: (r) => console.log(`  ${yellow(WARN)} Skipped: ${cyan(r)}  ${gray('(already exists -- use --force to overwrite)')}`),
   dry:     (r) => console.log(`  ${gray('[dry]')}    ${cyan(r)}`),
   warn:    (m) => console.log(`  ${yellow(WARN)} ${m}`),
   err:     (m) => console.log(`  ${red('[ERR]')} ${m}`),
@@ -124,45 +119,6 @@ function copyFile(src, dest) {
   }
   fs.copyFileSync(src, dest);
   log.created(r);
-}
-
-// ─── Merge logic (PIO START / PIO END markers) ────────────────────────────────
-const PIO_START = '<!-- PIO START -->';
-const PIO_END   = '<!-- PIO END -->';
-
-function mergeAgentFile(templatePath, destPath) {
-  const r            = relPath(destPath);
-  const templateText = fs.readFileSync(templatePath, 'utf8');
-
-  if (!fs.existsSync(destPath)) {
-    if (DRY_RUN) { log.dry(r); return; }
-    fs.writeFileSync(destPath, templateText, 'utf8');
-    log.created(r);
-    return;
-  }
-
-  const existing    = fs.readFileSync(destPath, 'utf8');
-  const hasPioBlock = existing.includes(PIO_START) && existing.includes(PIO_END);
-
-  if (hasPioBlock) {
-    if (!FORCE) {
-      log.skipped(r);
-      return;
-    }
-    // --force: replace only the PIO block, preserve surrounding content
-    if (DRY_RUN) { log.dry(`${r}  (PIO block would be replaced)`); return; }
-    const before = existing.substring(0, existing.indexOf(PIO_START));
-    const after  = existing.substring(existing.indexOf(PIO_END) + PIO_END.length);
-    fs.writeFileSync(destPath, before + templateText + after, 'utf8');
-    log.updated(r);
-    return;
-  }
-
-  // No PIO block -> append at end (non-destructive)
-  if (DRY_RUN) { log.dry(`${r}  (PIO block would be appended)`); return; }
-  const gap = existing.length > 0 && !existing.endsWith('\n') ? '\n\n' : '\n';
-  fs.writeFileSync(destPath, existing + gap + templateText, 'utf8');
-  log.merged(r);
 }
 
 // ─── Installer ────────────────────────────────────────────────────────────────
@@ -230,13 +186,11 @@ function installPio() {
     path.join(PIO_DIR, 'archive', 'README.md')
   );
 
-  // 6 -- agent config files (merge into project root)
-  for (const file of ['CLAUDE.md', 'CODEX.md', 'GEMINI.md', 'AGENTS.md']) {
-    mergeAgentFile(
-      path.join(TEMPLATES_DIR, file),
-      path.join(TARGET_DIR, file)
-    );
-  }
+  // 6 -- AGENTS.md (Codex context — created only if missing, never merged into existing)
+  copyFile(
+    path.join(TEMPLATES_DIR, 'AGENTS.md'),
+    path.join(TARGET_DIR, 'AGENTS.md')
+  );
 
   // 7 -- Claude Code slash commands (.claude/commands/pio/)
   const CLAUDE_COMMANDS_DIR = path.join(TARGET_DIR, '.claude', 'commands', 'pio');
@@ -303,12 +257,9 @@ ${bot}
 ${bold('Next steps:')}
 
   1. Edit ${cyan('pio' + path.sep + 'STATUS.md')} ${arr} assign roles to your agents
-  2. Open your AI clients on this project:
-     ${gray('Claude Code  ' + arr + '  /pio:status, /pio:plan, ...')}
-     ${gray('Codex        ' + arr + '  /prompts:pio-status, /prompts:pio-plan, ...')}
-     ${gray('Gemini CLI   ' + arr + '  reads GEMINI.md')}
-  3. Claude Code: ${bold(cyan('/pio:status'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-status'))}
-  4. Planner client: ${bold(cyan('/pio:plan'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-plan'))}
+  2. Claude Code: ${bold(cyan('/pio:status'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-status'))}
+  3. To start planning:
+     Claude Code: ${bold(cyan('/pio:plan'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-plan'))}
 
 ${sep}
   ${gray('Full docs:        ')} ${cyan('pio' + path.sep + 'QUICKSTART.md')}
