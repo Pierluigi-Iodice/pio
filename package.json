@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Project Integration Orchestration — multi-agent workflow protocol for vibe coders",
   "bin": {
-    "pio-installer": "./bin/install.js"
+    "pio-installer": "bin/install.js"
   },
   "scripts": {
     "test": "node bin/install.js --dry-run"
@@ -21,7 +21,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Pierluigi-Iodice/pio"
+    "url": "git+https://github.com/Pierluigi-Iodice/pio.git"
   },
   "engines": {
     "node": ">=16.0.0"
