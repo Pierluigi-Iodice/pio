@@ -6,7 +6,7 @@
 npx pio-installer@latest
 ```
 
-That's it. PIO creates `./pio/` and merges `/pio:*` commands into `CLAUDE.md`, `CODEX.md`, and `GEMINI.md`.
+PIO creates `./pio/`, `.claude/commands/pio/` (Claude Code slash commands), `.codex/skills/pio-*/` (Codex prompts), and merges context into `CLAUDE.md`, `CODEX.md`, `GEMINI.md`, and `AGENTS.md`.
 
 ## Step 2 — Assign roles
 
@@ -21,12 +21,21 @@ Edit the Role Assignment section in `pio/STATUS.md`:
 
 ## Step 3 — Open your AI clients on the same directory
 
-Claude Code, Codex, and Gemini CLI all auto-read their config files and know the `/pio:*` commands.
+| Client | How to invoke PIO |
+|--------|-------------------|
+| **Claude Code** | `/pio:status`, `/pio:plan`, `/pio:develop`, etc. |
+| **Codex** | `/prompts:pio-status`, `/prompts:pio-plan`, etc. |
+| **Gemini CLI** | See `GEMINI.md` for available workflow instructions |
+
+> **Important:** Claude Code uses native slash commands (`/pio:*`).
+> Codex uses native prompts (`/prompts:pio-*`). These are different invocation mechanisms — both work automatically after install.
 
 ## Step 4 — Check status
 
-In any client: `/pio:status`
-You should see: `Phase: PLANNING — Awaiting /pio:plan`
+- Claude Code: `/pio:status`
+- Codex: `/prompts:pio-status`
+
+You should see: `Phase: IDLE — Run /pio:plan (or /prompts:pio-plan) to start`
 
 ## Step 5 — Start planning
 
@@ -35,8 +44,8 @@ Describe the feature. Discuss. Agent writes `pio/handoff/plan.md`.
 
 ## Step 6 — Get the review
 
-Switch to Codex (Reviewer): `/pio:review`
-Agent reads plan, shows analysis on screen. Discuss. Then: `/pio:accept`
+Switch to Codex (Reviewer): `/prompts:pio-review`
+Agent reads plan, shows analysis on screen. Discuss. Then: `/prompts:pio-accept`
 
 ## Step 7 — Apply the review
 
@@ -47,33 +56,39 @@ Agent reads review, updates plan, flags anything needing your decision.
 
 When both agree the plan is solid:
 - Claude Code: `/pio:greenlight`
-- Codex: `/pio:greenlight`
+- Codex: `/prompts:pio-greenlight`
+
 Both green lights → proceed to development.
 
 ## Step 9 — Develop → Review → Fix → Test
 
 ```
-/pio:develop      → Coder implements
-/pio:reviewcode   → Reviewer audits (Codex)
-/pio:accept       → Review saved
-/pio:fix          → Coder fixes
-/pio:greenlight   → Both approve
+Claude Code:  /pio:develop          → Coder implements, writes dev_log.md
+Codex:        /prompts:pio-reviewcode → Reviewer audits (shows on screen)
+Codex:        /prompts:pio-accept    → Review saved
+Claude Code:  /pio:fix              → Coder fixes
+Both:         /pio:greenlight / /prompts:pio-greenlight → Development approved
 
-/pio:testplan     → Tester defines tests (Codex)
-/pio:accept       → Test plan saved
-/pio:runtest      → Tests executed
-/pio:reviewtest   → Results reviewed
-/pio:bugfix       → Bugs fixed
-/pio:greenlight   → Both approve → DONE
+Codex:        /prompts:pio-testplan  → Tester defines tests (shows on screen)
+Codex:        /prompts:pio-accept    → Test plan saved
+Codex:        /prompts:pio-runtest   → Tests executed
+Codex:        /prompts:pio-reviewtest → Results reviewed (shows on screen)
+Codex:        /prompts:pio-accept    → Test review saved
+Claude Code:  /pio:bugfix           → Bugs fixed
+Both:         /pio:greenlight / /prompts:pio-greenlight → QA approved → DONE
 ```
 
 ## Step 10 — Archive
 
-`/pio:archive` → moves all handoff files to `pio/archive/[date-feature]/`, resets STATUS.md.
+- Claude Code: `/pio:archive`
+- Codex: `/prompts:pio-archive`
+
+Moves all handoff files to `pio/archive/[date-feature]/`, resets STATUS.md.
 
 ## Tips
 
 - **You are the PM.** Nothing happens without your command.
-- **Read STATUS.md** any time you're unsure where you are.
+- **Read STATUS.md** any time you're unsure where you are — use `/pio:status` or `/prompts:pio-status`.
 - **Skip phases** for small tasks — go straight to `/pio:develop` (the agent will ask you to describe the task inline if no `plan.md` exists) + `/pio:reviewcode`.
-- **Fragments** — run `/pio:develop` once per implementation step for large plans.
+- **CODEX.md is context, not a command registry.** Codex reads it for role and protocol context, but actual command invocation is via `/prompts:pio-*` backed by `.codex/skills/pio-*/SKILL.md`.
+- **Fragments** — run `/pio:develop` (or `/prompts:pio-develop`) once per implementation step for large plans.

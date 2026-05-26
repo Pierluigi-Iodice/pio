@@ -82,13 +82,14 @@ You assign roles to your agents. Example:
 PIO is **semi-automated by design**. Every handoff requires your explicit command:
 
 ```
-[Claude Code]  /pio:plan          → generates plan.md
+[Claude Code]  /pio:plan                → generates plan.md
 [You]          read it, discuss
-[Codex]        /pio:review        → reads plan.md, shows analysis on screen
+[Codex]        /prompts:pio-review      → reads plan.md, shows analysis on screen
 [You]          discuss, accept or request changes
-[Codex]        /pio:accept        → writes review_plan.md
-[Claude Code]  /pio:applyreview   → reads review, updates plan
-[Both]         /pio:greenlight    → planning approved → proceed to development
+[Codex]        /prompts:pio-accept      → writes review_plan.md
+[Claude Code]  /pio:applyreview         → reads review, updates plan
+[Both]         /pio:greenlight          → planning approved
+               /prompts:pio-greenlight  → proceed to development
 ```
 
 Nothing happens without your command. You are the PM.
@@ -99,20 +100,28 @@ Nothing happens without your command. You are the PM.
 
 | Command | Who | What |
 |---|---|---|
-| `/pio:status` | Any | Current phase, pending action, green lights |
-| `/pio:plan` | Planner | Discuss & write `handoff/plan.md` |
-| `/pio:review` | Reviewer | Read plan, show analysis on screen |
-| `/pio:accept` | Any | Save last analysis shown on screen to the correct `handoff/` file |
-| `/pio:applyreview` | Planner | Apply review, update plan |
-| `/pio:greenlight` | Any | Approve current phase |
-| `/pio:develop` | Coder | Implement from `plan.md` or inline brief, write `dev_log.md` |
-| `/pio:reviewcode` | Reviewer | Audit implementation |
-| `/pio:fix` | Coder | Apply code review fixes |
-| `/pio:testplan` | Tester | Generate test scenarios |
-| `/pio:runtest` | Coder/Tester | Execute tests, write results |
-| `/pio:reviewtest` | Reviewer | Classify PASS / FAIL / REGRESSION |
-| `/pio:bugfix` | Coder | Fix test failures |
-| `/pio:archive` | Any | Save session, reset for next feature |
+| `status` | Any | Current phase, pending action, green lights |
+| `plan` | Planner | Discuss & write `handoff/plan.md` |
+| `review` | Reviewer | Read plan, show analysis on screen |
+| `accept` | Any | Save last analysis shown on screen to the correct `handoff/` file |
+| `applyreview` | Planner | Apply review, update plan |
+| `greenlight` | Any | Approve current phase |
+| `develop` | Coder | Implement from `plan.md` or inline brief, write `dev_log.md` |
+| `reviewcode` | Reviewer | Audit implementation |
+| `fix` | Coder | Apply code review fixes |
+| `testplan` | Tester | Generate test scenarios |
+| `runtest` | Coder/Tester | Execute tests, write results |
+| `reviewtest` | Reviewer | Classify PASS / FAIL / REGRESSION |
+| `bugfix` | Coder | Fix test failures |
+| `archive` | Any | Save session, reset for next feature |
+
+**Invocation by client:**
+
+| Client | Syntax | Example |
+|--------|--------|---------|
+| Claude Code | `/pio:<command>` | `/pio:plan` |
+| Codex | `/prompts:pio-<command>` | `/prompts:pio-plan` |
+| Gemini CLI | See `GEMINI.md` | Manual workflow |
 
 ---
 
@@ -152,12 +161,20 @@ The `roles/` files are plain markdown — edit them to match your stack:
 
 ```
 your-project/
-├── CLAUDE.md          ← /pio:* commands for Claude Code
-├── CODEX.md           ← /pio:* commands for Codex
-├── GEMINI.md          ← /pio:* commands for Gemini CLI
+├── CLAUDE.md              ← PIO context for Claude Code
+├── CODEX.md               ← PIO context for Codex
+├── AGENTS.md              ← PIO agent instructions for Codex
+├── GEMINI.md              ← PIO context for Gemini CLI
+├── .claude/
+│   └── commands/pio/      ← /pio:* native slash commands (Claude Code)
+├── .codex/
+│   └── skills/
+│       ├── pio-status/SKILL.md
+│       ├── pio-plan/SKILL.md
+│       └── ...            ← /prompts:pio-* native skills (Codex)
 └── pio/
-    ├── STATUS.md      ← your session control panel
-    ├── COMMANDS.md    ← full command reference
+    ├── STATUS.md          ← your session control panel
+    ├── COMMANDS.md        ← full command reference
     ├── QUICKSTART.md
     ├── HOW_IT_WORKS.md
     ├── roles/
@@ -165,8 +182,8 @@ your-project/
     │   ├── coder.md
     │   ├── reviewer.md
     │   └── tester.md
-    ├── handoff/       ← active session files
-    └── archive/       ← completed sessions
+    ├── handoff/           ← active session files
+    └── archive/           ← completed sessions
 ```
 
 ---

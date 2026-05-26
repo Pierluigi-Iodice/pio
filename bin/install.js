@@ -69,9 +69,11 @@ ${bold('Usage:')}
 ${bold('What it creates:')}
   ./pio/                    Status, roles, handoff templates, archive
   ./.claude/commands/pio/   Native /pio:* slash commands for Claude Code
+  ./.codex/skills/pio-*/    Native /prompts:pio-* skills for Codex
   ./CLAUDE.md               PIO context for Claude Code  (merged if file exists)
-  ./CODEX.md                PIO commands for Codex       (merged if file exists)
-  ./GEMINI.md               PIO commands for Gemini CLI  (merged if file exists)
+  ./CODEX.md                PIO context for Codex        (merged if file exists)
+  ./AGENTS.md               PIO context for Codex agents (merged if file exists)
+  ./GEMINI.md               PIO context for Gemini CLI   (merged if file exists)
 
 ${bold('Merge behaviour:')}
   If CLAUDE.md / CODEX.md / GEMINI.md already exist in the project:
@@ -229,7 +231,7 @@ function installPio() {
   );
 
   // 6 -- agent config files (merge into project root)
-  for (const file of ['CLAUDE.md', 'CODEX.md', 'GEMINI.md']) {
+  for (const file of ['CLAUDE.md', 'CODEX.md', 'GEMINI.md', 'AGENTS.md']) {
     mergeAgentFile(
       path.join(TEMPLATES_DIR, file),
       path.join(TARGET_DIR, file)
@@ -252,7 +254,23 @@ function installPio() {
     );
   }
 
-  // 8 -- done
+  // 8 -- Codex skills (.codex/skills/pio-*/)
+  const CODEX_SKILLS_BASE = path.join(TARGET_DIR, '.codex', 'skills');
+  createDir(path.join(TARGET_DIR, '.codex'));
+  createDir(CODEX_SKILLS_BASE);
+  for (const skill of [
+    'pio-status', 'pio-plan', 'pio-review', 'pio-accept', 'pio-applyreview',
+    'pio-greenlight', 'pio-develop', 'pio-reviewcode', 'pio-fix',
+    'pio-testplan', 'pio-runtest', 'pio-reviewtest', 'pio-bugfix', 'pio-archive',
+  ]) {
+    createDir(path.join(CODEX_SKILLS_BASE, skill));
+    copyFile(
+      path.join(TEMPLATES_DIR, 'codex-skills', skill, 'SKILL.md'),
+      path.join(CODEX_SKILLS_BASE, skill, 'SKILL.md')
+    );
+  }
+
+  // 9 -- done
   if (DRY_RUN) {
     const sep = gray(U.hline.repeat(54));
     console.log(`\n${sep}`);
@@ -286,11 +304,11 @@ ${bold('Next steps:')}
 
   1. Edit ${cyan('pio' + path.sep + 'STATUS.md')} ${arr} assign roles to your agents
   2. Open your AI clients on this project:
-     ${gray('Claude Code  ' + arr + '  reads CLAUDE.md')}
-     ${gray('Codex        ' + arr + '  reads CODEX.md')}
+     ${gray('Claude Code  ' + arr + '  /pio:status, /pio:plan, ...')}
+     ${gray('Codex        ' + arr + '  /prompts:pio-status, /prompts:pio-plan, ...')}
      ${gray('Gemini CLI   ' + arr + '  reads GEMINI.md')}
-  3. In any client, run:    ${bold(cyan('/pio:status'))}
-  4. In the Planner client: ${bold(cyan('/pio:plan'))}
+  3. Claude Code: ${bold(cyan('/pio:status'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-status'))}
+  4. Planner client: ${bold(cyan('/pio:plan'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-plan'))}
 
 ${sep}
   ${gray('Full docs:        ')} ${cyan('pio' + path.sep + 'QUICKSTART.md')}

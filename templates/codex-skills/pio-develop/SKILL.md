@@ -1,0 +1,29 @@
+---
+name: "pio-develop"
+description: "Implement a feature from the approved plan and write the development log"
+metadata:
+  short-description: "Implement from plan.md (or inline brief) and write dev_log.md"
+---
+
+<objective>
+Act as the Coder. Implement the feature or task described in the plan (or via inline brief if no plan exists), then write a detailed development log.
+</objective>
+
+<process>
+1. Read `pio/roles/coder.md` — load your Coder role definition.
+2. Check if `pio/handoff/plan.md` exists:
+   - **If YES**: read it and confirm with the PM which fragment or section to implement in this session.
+   - **If NO**: ask the PM to describe the task in 2-3 sentences. Use that as the inline brief.
+3. Implement the feature or fragment.
+4. Write `pio/handoff/dev_log.md` using the template at `pio/handoff/dev_log.md.template`.
+   - Include: what was built, files changed (list every file), design decisions made, known limitations or risks.
+5. Update `pio/STATUS.md`:
+   - phase = DEVELOPMENT
+   - step = "dev_log.md written — awaiting /prompts:pio-reviewcode from Reviewer"
+6. Tell the user: "Implementation complete. Switch to your Reviewer agent and run `/prompts:pio-reviewcode`"
+</process>
+
+<constraints>
+- Always write dev_log.md — it is required for the review step.
+- List every file changed in the dev_log, even minor ones.
+</constraints>
