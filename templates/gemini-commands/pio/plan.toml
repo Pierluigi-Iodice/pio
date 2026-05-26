@@ -10,15 +10,18 @@ Act as the Planner. Discuss the feature or task with the user, clarify requireme
 3. Ask the user to describe the feature or task to plan.
 4. Discuss until requirements, scope, and constraints are clear. Ask clarifying questions if needed.
 5. Write `pio/handoff/plan.md` using the template at `pio/handoff/plan.md.template`.
+   - Set version to v1 in the header.
    - Include: objective, scope, constraints, approach, files to change, acceptance criteria, open questions.
 6. Update `pio/STATUS.md`:
-   - phase = PLANNING
-   - step = "plan.md written — awaiting /pio:review from Reviewer"
+   - Change ONLY **Phase:**, **Step:**, and **Last updated:**
+   - Set Phase = PLANNING, Step = "plan.md v1 written — awaiting /pio:review from Reviewer"
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Planner** ([agent]): /pio:plan — wrote plan.md v1. [1-line summary of feature]`
 7. Tell the user: "Plan written. Switch to your Reviewer agent and run `/pio:review`"
 </process>
 
 <constraints>
 - Do not skip the discussion step. If requirements are unclear, ask before writing.
 - Write only to pio/handoff/plan.md and pio/STATUS.md.
+- Only update Phase/Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>
 """

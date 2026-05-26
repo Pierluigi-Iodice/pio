@@ -1,46 +1,34 @@
 ---
 name: "pio-reviewtest"
-description: "Validate test results and classify each as PASS, FAIL, or REGRESSION"
+description: "Classify test results as PASS/FAIL/REGRESSION and show on screen"
 metadata:
-  short-description: "Review test_results.md and classify outcomes — show on screen, do not write yet"
+  short-description: "Review test_results.md — show classification on screen, do not write yet"
 ---
 
 <objective>
-Act as the Reviewer. Read the test results, classify each outcome, identify regressions, and produce a structured test review. Show it on screen — do not write to disk until the user runs /prompts:pio-accept.
+Act as the Reviewer. Classify test results and show the analysis on screen. Do not write until /prompts:pio-accept.
 </objective>
 
 <process>
-1. Read `pio/handoff/test_results.md`
-   - If missing: tell the user "No test results found. Have the Tester run `/prompts:pio-runtest` first." Stop.
-2. Classify each test result:
-   - ✅ PASS — working as expected
-   - ❌ FAIL — not working, needs a fix
-   - ⚠️ REGRESSION — was working before, now broken (highest priority)
-3. **Show analysis on screen — do NOT write any file yet.**
+1. Read `pio/handoff/test_results.md`. If missing: stop.
+2. Classify each: PASS / FAIL / REGRESSION (regressions = highest priority).
+3. **Show on screen — do NOT write yet.**
 
-   Format your output exactly as:
+   Format:
    ```
-   ## Test Review Summary
-   Total: X — Pass: X — Fail: X — Regression: X
-
+   ## Test Review Summary — Total: X / Pass: X / Fail: X / Regression: X
    ## Results Table
-   | Scenario | Result | Notes |
-   |----------|--------|-------|
-   | ...      | ✅/❌/⚠️ | ... |
-
    ## Failures & Regressions
-   [For each FAIL/REGRESSION: description of what's wrong + recommended fix]
-
-   ## Recommendation
-   READY TO SHIP / FIX REQUIRED
+   ## Recommendation: READY TO SHIP / FIX REQUIRED
    ```
 
-4. Update `pio/STATUS.md` step: "test review shown — awaiting /prompts:pio-accept"
-5. Tell the user: "Test review complete. Discuss, then run `/prompts:pio-accept` to save it."
+4. Update `pio/STATUS.md`:
+   - Change ONLY `**Step:**` to `test review shown — awaiting /prompts:pio-accept` and `**Last updated:**`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent]): /prompts:pio-reviewtest — Pass: X, Fail: X, Regression: X. Recommendation: [result]`
+5. Tell the user: "Test review complete. Discuss, then run `/prompts:pio-accept`."
 </process>
 
 <constraints>
-- Do NOT write test_review.md at this stage.
-- Only update the step field in pio/STATUS.md.
-- Regressions are always FIX REQUIRED, regardless of their count.
+- Do NOT write test_review_v*.md at this stage.
+- Only update Step/Last updated in STATUS.md. Append to log — never overwrite it.
 </constraints>

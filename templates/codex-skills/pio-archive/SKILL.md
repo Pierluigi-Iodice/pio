@@ -1,38 +1,36 @@
 ---
 name: "pio-archive"
-description: "Archive the completed session and reset PIO for the next feature"
+description: "Archive completed session and reset PIO for the next feature"
 metadata:
-  short-description: "Move handoff files to archive/ and reset pio/STATUS.md"
+  short-description: "Move all handoff files to archive/ and reset STATUS.md"
 ---
 
 <objective>
-Archive all session handoff files for the completed feature, then reset pio/STATUS.md to the initial state so PIO is ready for the next feature.
+Archive all session files (including all versioned review files), then reset STATUS.md to initial state.
 </objective>
 
 <process>
 1. Read `pio/STATUS.md` for the feature name.
-2. Create the archive directory: `pio/archive/[YYYY-MM-DD_feature-name]/`
-   - Use today's date and a slug derived from the feature name.
-3. Move the following session files from `pio/handoff/` into the archive directory:
+2. Create: `pio/archive/[YYYY-MM-DD_feature-name]/`
+3. Move to archive (skip if not present):
    - `plan.md`
-   - `review_plan.md`
+   - all `review_plan_v*.md`
    - `dev_log.md`
-   - `review_code.md`
+   - all `review_code_v*.md`
    - `test_plan.md`
    - `test_results.md`
-   - `test_review.md`
+   - all `test_review_v*.md`
    - `greenlight.md`
-   - Only move a file if it exists — skip silently if it doesn't.
-4. **Do NOT move or touch these files** — they are permanent install artifacts:
-   - `pio/handoff/README.md`
-   - `pio/handoff/*.template`
-5. Reset `pio/STATUS.md` to the initial blank state:
-   - phase = IDLE
-   - All step, pending action, green light, and feature fields cleared.
-6. Tell the user: "Session archived at `pio/archive/[folder-name]/`. PIO is ready for the next feature. Run `/prompts:pio-plan` to start."
+4. **Do NOT move**: `handoff/README.md` and `*.template` files.
+5. Reset `pio/STATUS.md`:
+   - Phase = IDLE, Step = "Run /prompts:pio-plan to begin"
+   - Clear Feature field
+   - Keep Role Assignment section intact
+   - Replace Session Log content with `*(no entries yet)*`
+6. Tell the user: "Session archived at `pio/archive/[folder]/`. PIO ready for next feature."
 </process>
 
 <constraints>
-- Never delete pio/handoff/README.md or any *.template file.
-- Never overwrite existing archive folders — if the folder already exists, append a counter suffix (e.g., _2).
+- Move ALL versioned review files (v1, v2, v3...) — not just the latest.
+- Never delete handoff/README.md or *.template files.
 </constraints>

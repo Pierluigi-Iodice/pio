@@ -8,26 +8,29 @@ Archive all session handoff files for the completed feature, then reset pio/STAT
 1. Read `pio/STATUS.md` for the feature name.
 2. Create the archive directory: `pio/archive/[YYYY-MM-DD_feature-name]/`
    - Use today's date and a slug derived from the feature name.
-3. Move the following session files from `pio/handoff/` into the archive directory:
+3. Move the following session files from `pio/handoff/` into the archive directory (skip silently if not present):
    - plan.md
-   - review_plan.md
+   - all review_plan_v*.md (every version)
    - dev_log.md
-   - review_code.md
+   - all review_code_v*.md (every version)
    - test_plan.md
    - test_results.md
-   - test_review.md
+   - all test_review_v*.md (every version)
    - greenlight.md
-   Only move a file if it exists — skip silently if it doesn't.
 4. Do NOT move or touch these files — they are permanent install artifacts:
    - pio/handoff/README.md
    - pio/handoff/*.template
 5. Reset `pio/STATUS.md` to the initial blank state:
-   - phase = IDLE
-   - All step, pending action, green light, and feature fields cleared.
+   - Phase = IDLE
+   - Step = "Run /pio:plan to begin"
+   - Clear Feature field
+   - Keep Role Assignment section intact
+   - Replace Session Log content with `*(no entries yet)*`
 6. Tell the user: "Session archived at `pio/archive/[folder-name]/`. PIO is ready for the next feature. Run `/pio:plan` to start."
 </process>
 
 <constraints>
+- Move ALL versioned review files (v1, v2, v3...) — not just the latest.
 - Never delete pio/handoff/README.md or any *.template file.
 - Never overwrite existing archive folders — if the folder already exists, append a counter suffix (e.g., _2).
 </constraints>

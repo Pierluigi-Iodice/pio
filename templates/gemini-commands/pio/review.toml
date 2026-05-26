@@ -28,12 +28,15 @@ Act as the Reviewer. Read the plan with a fresh perspective and produce a struct
    ## Recommendation
    APPROVED / APPROVED WITH CHANGES / REQUIRES REWORK
 
-5. Update `pio/STATUS.md` step: "plan review shown — awaiting /pio:accept"
+5. Update `pio/STATUS.md`:
+   - Change ONLY **Step:** and **Last updated:**
+   - Set Step = "plan review shown — awaiting /pio:accept"
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent]): /pio:review — plan review shown. [recommendation from step 4]`
 6. Tell the user: "Review complete. Discuss with your team, then run `/pio:accept` to save it."
 </process>
 
 <constraints>
 - Do NOT write review_plan.md or any handoff file at this stage.
-- Only update the step field in pio/STATUS.md.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>
 """

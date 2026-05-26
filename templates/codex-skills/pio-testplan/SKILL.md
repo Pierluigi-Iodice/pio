@@ -1,30 +1,26 @@
 ---
 name: "pio-testplan"
-description: "Generate a test plan for the implemented feature and show it on screen"
+description: "Generate test scenarios and show on screen — do not write yet"
 metadata:
-  short-description: "Generate test scenarios from plan.md + dev_log.md — show on screen, do not write yet"
+  short-description: "Generate test plan from plan.md + dev_log.md — show on screen"
 ---
 
 <objective>
-Act as the Tester. Read the plan and development log, generate a comprehensive test plan covering all scenarios, and show it on screen. Do not write to disk until the user runs /prompts:pio-accept.
+Act as the Tester. Generate a test plan and show it on screen. Do not write until /prompts:pio-accept.
 </objective>
 
 <process>
-1. Read `pio/roles/tester.md` — load your Tester role definition.
-2. Read `pio/handoff/plan.md` (for requirements and acceptance criteria).
-3. Read `pio/handoff/dev_log.md` (for what was implemented and which files changed).
-4. Generate a test plan covering:
-   - Happy path scenarios (expected normal usage)
-   - Edge cases (boundary conditions, unusual inputs)
-   - Error states (invalid inputs, missing data, network failures)
-   - Regression checks (things that might have broken due to this change)
-5. **Show the test plan on screen — do NOT write any file yet.**
-6. Update `pio/STATUS.md` step: "test plan shown — awaiting /prompts:pio-accept"
-7. Tell the user: "Test plan ready. Review it, then run `/prompts:pio-accept` to save `test_plan.md`."
+1. Read `pio/roles/tester.md`
+2. Read `pio/handoff/plan.md` and `pio/handoff/dev_log.md`
+3. Generate: happy path, edge cases, error states, regression checks
+4. **Show on screen — do NOT write yet**
+5. Update `pio/STATUS.md`:
+   - Change ONLY `**Step:**` to `test plan shown — awaiting /prompts:pio-accept` and `**Last updated:**`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Tester** ([agent]): /prompts:pio-testplan — test plan shown. [X] scenarios`
+6. Tell the user: "Test plan ready. Review it, then run `/prompts:pio-accept`."
 </process>
 
 <constraints>
 - Do NOT write test_plan.md at this stage.
-- Only update the step field in pio/STATUS.md.
-- Include at least one regression check for each file changed in the dev_log.
+- Only update Step/Last updated in STATUS.md. Append to log — never overwrite it.
 </constraints>

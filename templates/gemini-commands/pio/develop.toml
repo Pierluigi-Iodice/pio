@@ -13,13 +13,15 @@ Act as the Coder. Implement the feature or task described in the plan (or via in
 4. Write `pio/handoff/dev_log.md` using the template at `pio/handoff/dev_log.md.template`.
    - Include: what was built, files changed (list every file), design decisions made, known limitations or risks.
 5. Update `pio/STATUS.md`:
-   - phase = DEVELOPMENT
-   - step = "dev_log.md written — awaiting /pio:reviewcode from Reviewer"
+   - Change ONLY **Phase:**, **Step:**, and **Last updated:**
+   - Set Phase = DEVELOPMENT, Step = "dev_log.md written — awaiting /pio:reviewcode from Reviewer"
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Coder** ([agent]): /pio:develop — wrote dev_log.md. [1-line summary of what was built]`
 6. Tell the user: "Implementation complete. Switch to your Reviewer agent and run `/pio:reviewcode`"
 </process>
 
 <constraints>
 - Always write dev_log.md — it is required for the review step.
 - List every file changed in the dev_log, even minor ones.
+- Only update Phase/Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>
 """

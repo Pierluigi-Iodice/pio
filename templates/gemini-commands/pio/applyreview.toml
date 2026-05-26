@@ -1,25 +1,28 @@
-description = "Apply reviewer feedback from review_plan.md and update plan.md"
+description = "Apply the latest unprocessed plan review to plan.md"
 prompt = """
 <objective>
-Act as the Planner. Read the reviewer's feedback and apply each issue to the plan, incrementing the plan version.
+Act as the Planner. Find the latest review_plan_v*.md not yet logged as processed. Apply it to plan.md and log which version was used — preventing duplicate processing across agents.
 </objective>
 
 <process>
-1. Read `pio/roles/planner.md`
-2. Read `pio/handoff/review_plan.md`
-   - If missing: tell the user "No review found. Have the Reviewer run `/pio:review` and then `/pio:accept` first." Stop.
-3. Read `pio/handoff/plan.md`
-4. For each Critical Issue: apply the fix, or flag it for PM discussion if the fix requires a scope decision.
-5. For each Minor Issue: apply it, or note briefly why it was skipped.
-6. For each Open Question: ask the PM before proceeding.
-7. Rewrite `pio/handoff/plan.md` with all changes applied. Increment the version number in the header.
-8. Report clearly: what was changed, what was skipped and why, what needs PM discussion.
-9. Update `pio/STATUS.md`:
-   - step = "plan updated — ready for /pio:greenlight or another /pio:review round"
+1. Read pio/roles/planner.md
+2. Read pio/STATUS.md — scan the Session Log for lines containing "applyreview" to see which review_plan_v*.md files have already been processed.
+3. List all review_plan_v*.md files in pio/handoff/.
+4. Identify the latest unprocessed review (highest version not yet in the log).
+   - If all already processed: tell the user "No new review to apply. Run /pio:review for a new cycle." Stop.
+5. Read the identified review file and pio/handoff/plan.md (note current version).
+6. Apply Critical Issues (or flag for PM if scope decision needed).
+7. Apply Minor Issues (or note why skipped).
+8. Ask PM about Open Questions before proceeding.
+9. Rewrite plan.md with changes. Increment version in header.
+10. Report: what changed, skipped, needs PM discussion.
+11. Update pio/STATUS.md:
+    - Change ONLY **Step:** and **Last updated:**
+    - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Planner** ([agent]): /pio:applyreview — applied [review filename] → plan.md v[N]. [1-line summary]`
 </process>
 
 <constraints>
-- Increment the plan version number in the header on every update.
-- Do not change the plan structure — only update content in response to review issues.
+- Never reprocess a review already in the Session Log.
+- Only update Phase/Step/Last updated in STATUS.md. Append to log — never overwrite it.
 </constraints>
 """

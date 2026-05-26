@@ -2,32 +2,32 @@
 name: "pio-greenlight"
 description: "Record a green light approval for the current PIO phase"
 metadata:
-  short-description: "Append a green light entry to pio/handoff/greenlight.md"
+  short-description: "Append approval to greenlight.md and log in STATUS.md"
 ---
 
 <objective>
-Record this agent's approval for the current phase by appending to greenlight.md, then check if all required green lights are in.
+Record this agent's approval for the current phase, then check if all required green lights are in.
 </objective>
 
 <process>
-1. Read `pio/STATUS.md` to determine the current phase and which agents are assigned.
-2. Append to `pio/handoff/greenlight.md` (create if it doesn't exist):
-
+1. Read `pio/STATUS.md` for current phase and role assignments.
+2. Append to `pio/handoff/greenlight.md` (create if missing):
    ```
    ## Green Light — [Agent Name]
    **Phase:** [current phase]
    **Date:** [today's date]
-   **Approved:** [1-2 sentence summary of what is being approved and why it's ready]
+   **Approved:** [1-2 sentence summary]
    ```
-
-3. Update the green light checklist in `pio/STATUS.md`.
-4. Check if all required roles have green-lit for this phase.
+3. Update `pio/STATUS.md`:
+   - Change ONLY `**Last updated:**`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **[role]** ([agent]): /prompts:pio-greenlight — approved [phase]`
+4. Check if all required roles have green-lit.
 5. Report:
-   - If all green lights are in: "All agents have approved. The phase is complete. Proceed to [next phase]."
-   - If not: "Green light recorded. Waiting for [other agent(s)] to also run `/prompts:pio-greenlight`."
+   - All in: "All approved. Proceed to [next phase]."
+   - Not yet: "Waiting for [other agent(s)]."
 </process>
 
 <constraints>
-- Always append — never overwrite the greenlight.md file.
-- Record the approval only for the current phase, not for future phases.
+- Always append to greenlight.md — never overwrite.
+- Only update Last updated in STATUS.md. Append to log — never overwrite it.
 </constraints>

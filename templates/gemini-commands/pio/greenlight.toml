@@ -13,7 +13,9 @@ Record this agent's approval for the current phase by appending to greenlight.md
    **Date:** [today's date]
    **Approved:** [1-2 sentence summary of what is being approved and why it's ready]
 
-3. Update the green light checklist in `pio/STATUS.md`.
+3. Update `pio/STATUS.md`:
+   - Change ONLY **Step:** and **Last updated:**
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **[Role]** ([agent]): /pio:greenlight — approved [phase]. [all-in or waiting on list]`
 4. Check if all required roles have green-lit for this phase.
 5. Report:
    - If all green lights are in: "All agents have approved. The phase is complete. Proceed to [next phase]."
@@ -23,5 +25,6 @@ Record this agent's approval for the current phase by appending to greenlight.md
 <constraints>
 - Always append — never overwrite the greenlight.md file.
 - Record the approval only for the current phase, not for future phases.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>
 """

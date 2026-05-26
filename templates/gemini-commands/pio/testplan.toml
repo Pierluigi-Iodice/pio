@@ -14,13 +14,16 @@ Act as the Tester. Read the plan and development log, generate a comprehensive t
    - Error states (invalid inputs, missing data, failures)
    - Regression checks (things that might have broken due to this change)
 5. Show the test plan on screen — do NOT write any file yet.
-6. Update `pio/STATUS.md` step: "test plan shown — awaiting /pio:accept"
+6. Update `pio/STATUS.md`:
+   - Change ONLY **Step:** and **Last updated:**
+   - Set Step = "test plan shown — awaiting /pio:accept"
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Tester** ([agent]): /pio:testplan — test plan shown. [X scenarios generated]`
 7. Tell the user: "Test plan ready. Review it, then run `/pio:accept` to save `test_plan.md`."
 </process>
 
 <constraints>
 - Do NOT write test_plan.md at this stage.
-- Only update the step field in pio/STATUS.md.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 - Include at least one regression check for each file changed in the dev_log.
 </constraints>
 """

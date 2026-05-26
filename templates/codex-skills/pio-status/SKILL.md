@@ -2,27 +2,25 @@
 name: "pio-status"
 description: "Report the current PIO session state"
 metadata:
-  short-description: "Report the current PIO session state"
+  short-description: "Read STATUS.md and report phase, step, log, and next command"
 ---
 
 <objective>
-Report the current PIO session state: phase, step, pending action, green lights, and which command to run next.
+Report the current PIO session state including recent Session Log entries so any agent can orient itself without asking the user.
 </objective>
 
 <process>
 1. Read `pio/STATUS.md`
-   - If missing: tell the user "PIO is not installed or the installation is incomplete. Run `npx pio-installer@latest` in this directory." Stop.
-2. Extract and report:
-   - Current phase (PLANNING / DEVELOPMENT / QA / IDLE)
-   - Current step within the phase
-   - Pending action (who needs to do what)
-   - Green light status (which agents have approved, which haven't)
-   - Last file written to `pio/handoff/`
-   - Assigned roles from the Role Assignment section
-3. Tell the user exactly which command to run next to advance the workflow.
+   - If missing: tell the user "PIO is not installed. Run `npx pio-installer@latest`." Stop.
+2. Report:
+   - Current phase and step
+   - Pending action
+   - Last 3–5 Session Log entries (so agents can see what the other agent already did)
+   - Versioned files present in `pio/handoff/` (list review_plan_v*.md, review_code_v*.md, test_review_v*.md with counts)
+3. Tell the user exactly which command to run next.
 </process>
 
 <constraints>
 - Do not modify any files.
-- Output must be concise and actionable — the user should immediately know what to do next.
+- Always show Session Log entries — they are the coordination mechanism between agents.
 </constraints>

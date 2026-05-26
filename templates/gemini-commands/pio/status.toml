@@ -1,7 +1,7 @@
 description = "Report the current PIO session state"
 prompt = """
 <objective>
-Report the current PIO session state: phase, step, pending action, green lights, and which command to run next.
+Report the current PIO session state: phase, step, pending action, and which command to run next.
 </objective>
 
 <process>
@@ -11,10 +11,10 @@ Report the current PIO session state: phase, step, pending action, green lights,
    - Current phase (PLANNING / DEVELOPMENT / QA / IDLE)
    - Current step within the phase
    - Pending action (who needs to do what)
-   - Green light status (which agents have approved, which haven't)
-   - Last file written to `pio/handoff/`
    - Assigned roles from the Role Assignment section
-3. Tell the user exactly which command to run next to advance the workflow.
+   - Handoff files present in pio/handoff/ (list all versioned files: review_plan_v*.md, review_code_v*.md, test_review_v*.md)
+3. Show the last 3–5 entries from the Session Log section.
+4. Tell the user exactly which command to run next to advance the workflow.
 </process>
 
 <constraints>

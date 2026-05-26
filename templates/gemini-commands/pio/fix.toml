@@ -1,25 +1,26 @@
-description = "Apply review_code.md feedback to fix the implementation"
+description = "Apply the latest unprocessed code review to fix the implementation"
 prompt = """
 <objective>
-Act as the Coder. Read the code review, fix all Critical Issues, address Minor Issues, and append a fix log to dev_log.md.
+Act as the Coder. Find the latest review_code_v*.md not yet in the Session Log. Apply fixes and log which version was used.
 </objective>
 
 <process>
-1. Read `pio/handoff/review_code.md`
-   - If missing: tell the user "No code review found. Have the Reviewer run `/pio:reviewcode` and then `/pio:accept` first." Stop.
-2. Read `pio/roles/coder.md`
-3. Address Critical Issues first — all of them must be fixed.
-4. Address Minor Issues — apply each, or note briefly why one was skipped.
-5. Append a "Fix Log" section to `pio/handoff/dev_log.md`:
-   - Each issue addressed: what was wrong and what was changed
-   - Anything skipped and why
-6. Update `pio/STATUS.md`:
-   - step = "fixes applied — run /pio:reviewcode again or /pio:greenlight if clean"
-7. Tell the user: "Fixes applied. Run `/pio:reviewcode` for another review pass, or `/pio:greenlight` if you're satisfied."
+1. Read pio/STATUS.md — scan Session Log for "pio:fix" entries to find processed review_code_v*.md files.
+2. List all review_code_v*.md in pio/handoff/.
+3. Identify latest unprocessed. If all processed: tell user to run /pio:reviewcode for a new cycle. Stop.
+4. Read review file and pio/roles/coder.md.
+5. Fix all Critical Issues first, then Minor Issues.
+6. Append "Fix Log" to pio/handoff/dev_log.md:
+   - Source file (e.g. review_code_v2.md), each issue fixed, anything skipped.
+7. Update pio/STATUS.md:
+   - Change ONLY **Step:** and **Last updated:**
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Coder** ([agent]): /pio:fix — applied [review filename]. [1-line summary]`
+8. Tell user: run /pio:reviewcode for another pass, or /pio:greenlight if clean.
 </process>
 
 <constraints>
-- All Critical Issues must be addressed before moving on.
-- Always append to dev_log.md — never overwrite the existing log content.
+- Never reprocess a review already in the Session Log.
+- Always append to dev_log.md — never overwrite.
+- Only update Phase/Step/Last updated in STATUS.md. Never overwrite Session Log.
 </constraints>
 """

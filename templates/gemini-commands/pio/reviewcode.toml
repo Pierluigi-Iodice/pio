@@ -31,12 +31,15 @@ Act as the Reviewer. Read the development log and all changed files, then produc
    ## Recommendation
    APPROVED / APPROVED WITH CHANGES / REQUIRES REWORK
 
-6. Update `pio/STATUS.md` step: "code review shown — awaiting /pio:accept"
+6. Update `pio/STATUS.md`:
+   - Change ONLY **Step:** and **Last updated:**
+   - Set Step = "code review shown — awaiting /pio:accept"
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent]): /pio:reviewcode — code review shown. [recommendation from step 5]`
 7. Tell the user: "Code review complete. Discuss, then run `/pio:accept` to save it."
 </process>
 
 <constraints>
 - Do NOT write review_code.md or any handoff file at this stage.
-- Only update the step field in pio/STATUS.md.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>
 """

@@ -1,30 +1,24 @@
 ---
 name: "pio-runtest"
-description: "Execute the test plan and write results to pio/handoff/test_results.md"
+description: "Execute test_plan.md and write test_results.md"
 metadata:
-  short-description: "Execute test_plan.md scenarios and write test_results.md"
+  short-description: "Run all test scenarios and write test_results.md"
 ---
 
 <objective>
-Act as the Tester. Execute every scenario in the test plan, record the outcome of each, and write the results to test_results.md.
+Act as the Tester. Execute all scenarios in test_plan.md and write test_results.md.
 </objective>
 
 <process>
-1. Read `pio/handoff/test_plan.md`
-   - If missing: tell the user "No test plan found. Run `/prompts:pio-testplan` and then `/prompts:pio-accept` first." Stop.
-2. Execute each test scenario in the plan.
-3. For each test, record:
-   - Scenario name / ID
-   - Steps taken
-   - Actual result
-   - Verdict: PASS / FAIL / BLOCKED (and reason if not PASS)
-4. Write `pio/handoff/test_results.md` using the template at `pio/handoff/test_results.md.template`.
-5. Update `pio/STATUS.md`:
-   - step = "test_results.md written — awaiting /prompts:pio-reviewtest from Reviewer"
-6. Tell the user: "Tests complete. Switch to your Reviewer agent and run `/prompts:pio-reviewtest`"
+1. Read `pio/handoff/test_plan.md`. If missing: stop and tell user to run `/prompts:pio-testplan` + `/prompts:pio-accept` first.
+2. Execute each scenario. Record: name, steps, actual result, PASS/FAIL/BLOCKED.
+3. Write `pio/handoff/test_results.md` (use template).
+4. Update `pio/STATUS.md`:
+   - Change ONLY `**Step:**` to `test_results.md written — awaiting /prompts:pio-reviewtest` and `**Last updated:**`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Tester** ([agent]): /prompts:pio-runtest — wrote test_results.md. Pass: X, Fail: X, Blocked: X`
+5. Tell the user: "Tests complete. Switch to Reviewer and run `/prompts:pio-reviewtest`"
 </process>
 
 <constraints>
-- Record every scenario — do not skip any, even if the result is PASS.
-- If a test cannot be executed, mark it BLOCKED with an explanation, do not skip it silently.
+- Only update Step/Last updated in STATUS.md. Append to log — never overwrite it.
 </constraints>
