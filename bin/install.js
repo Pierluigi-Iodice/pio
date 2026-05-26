@@ -70,6 +70,7 @@ ${bold('What it creates:')}
   ./pio/                    Status, roles, handoff templates, archive
   ./.claude/commands/pio/   Native /pio:* slash commands for Claude Code
   ./.codex/skills/pio-*/    Native /prompts:pio-* skills for Codex
+  ./.gemini/commands/pio/   Native /pio:* slash commands for Gemini CLI
   ./AGENTS.md               Codex agent instructions (created only if missing)
 
 ${bold('Non-destructive:')}
@@ -224,7 +225,23 @@ function installPio() {
     );
   }
 
-  // 9 -- done
+  // 9 -- Gemini CLI commands (.gemini/commands/pio/)
+  const GEMINI_COMMANDS_DIR = path.join(TARGET_DIR, '.gemini', 'commands', 'pio');
+  createDir(path.join(TARGET_DIR, '.gemini'));
+  createDir(path.join(TARGET_DIR, '.gemini', 'commands'));
+  createDir(GEMINI_COMMANDS_DIR);
+  for (const cmd of [
+    'status.toml', 'plan.toml', 'review.toml', 'accept.toml', 'applyreview.toml',
+    'greenlight.toml', 'develop.toml', 'reviewcode.toml', 'fix.toml',
+    'testplan.toml', 'runtest.toml', 'reviewtest.toml', 'bugfix.toml', 'archive.toml',
+  ]) {
+    copyFile(
+      path.join(TEMPLATES_DIR, 'gemini-commands', 'pio', cmd),
+      path.join(GEMINI_COMMANDS_DIR, cmd)
+    );
+  }
+
+  // 10 -- done
   if (DRY_RUN) {
     const sep = gray(U.hline.repeat(54));
     console.log(`\n${sep}`);
@@ -257,9 +274,12 @@ ${bot}
 ${bold('Next steps:')}
 
   1. Edit ${cyan('pio' + path.sep + 'STATUS.md')} ${arr} assign roles to your agents
-  2. Claude Code: ${bold(cyan('/pio:status'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-status'))}
-  3. To start planning:
-     Claude Code: ${bold(cyan('/pio:plan'))}  ${gray('|')}  Codex: ${bold(cyan('/prompts:pio-plan'))}
+  2. Check status:
+     Claude Code / Gemini: ${bold(cyan('/pio:status'))}
+     Codex: ${bold(cyan('/prompts:pio-status'))}
+  3. Start planning:
+     Claude Code / Gemini: ${bold(cyan('/pio:plan'))}
+     Codex: ${bold(cyan('/prompts:pio-plan'))}
 
 ${sep}
   ${gray('Full docs:        ')} ${cyan('pio' + path.sep + 'QUICKSTART.md')}

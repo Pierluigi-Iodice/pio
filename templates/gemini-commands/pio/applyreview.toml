@@ -1,0 +1,25 @@
+description = "Apply reviewer feedback from review_plan.md and update plan.md"
+prompt = """
+<objective>
+Act as the Planner. Read the reviewer's feedback and apply each issue to the plan, incrementing the plan version.
+</objective>
+
+<process>
+1. Read `pio/roles/planner.md`
+2. Read `pio/handoff/review_plan.md`
+   - If missing: tell the user "No review found. Have the Reviewer run `/pio:review` and then `/pio:accept` first." Stop.
+3. Read `pio/handoff/plan.md`
+4. For each Critical Issue: apply the fix, or flag it for PM discussion if the fix requires a scope decision.
+5. For each Minor Issue: apply it, or note briefly why it was skipped.
+6. For each Open Question: ask the PM before proceeding.
+7. Rewrite `pio/handoff/plan.md` with all changes applied. Increment the version number in the header.
+8. Report clearly: what was changed, what was skipped and why, what needs PM discussion.
+9. Update `pio/STATUS.md`:
+   - step = "plan updated — ready for /pio:greenlight or another /pio:review round"
+</process>
+
+<constraints>
+- Increment the plan version number in the header on every update.
+- Do not change the plan structure — only update content in response to review issues.
+</constraints>
+"""

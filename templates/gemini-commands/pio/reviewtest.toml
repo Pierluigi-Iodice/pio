@@ -1,0 +1,41 @@
+description = "Classify test results as PASS/FAIL/REGRESSION and show analysis on screen"
+prompt = """
+<objective>
+Act as the Reviewer. Read the test results, classify each outcome, identify regressions, and produce a structured test review. Show it on screen — do not write to disk until the user runs /pio:accept.
+</objective>
+
+<process>
+1. Read `pio/handoff/test_results.md`
+   - If missing: tell the user "No test results found. Have the Tester run `/pio:runtest` first." Stop.
+2. Classify each test result:
+   - PASS — working as expected
+   - FAIL — not working, needs a fix
+   - REGRESSION — was working before, now broken (highest priority)
+3. Show analysis on screen — do NOT write any file yet.
+
+   Format your output exactly as:
+
+   ## Test Review Summary
+   Total: X — Pass: X — Fail: X — Regression: X
+
+   ## Results Table
+   | Scenario | Result | Notes |
+   |----------|--------|-------|
+   | ...      | PASS/FAIL/REGRESSION | ... |
+
+   ## Failures & Regressions
+   [For each FAIL/REGRESSION: description of what's wrong + recommended fix]
+
+   ## Recommendation
+   READY TO SHIP / FIX REQUIRED
+
+4. Update `pio/STATUS.md` step: "test review shown — awaiting /pio:accept"
+5. Tell the user: "Test review complete. Discuss, then run `/pio:accept` to save it."
+</process>
+
+<constraints>
+- Do NOT write test_review.md at this stage.
+- Only update the step field in pio/STATUS.md.
+- Regressions are always FIX REQUIRED, regardless of their count.
+</constraints>
+"""
