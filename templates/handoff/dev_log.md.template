@@ -1,0 +1,20 @@
+# Dev Log — [feature name]
+**Author:** [agent] | **Date:** [timestamp] | **Plan:** v[X] | **Fragment:** [which steps]
+
+## What Was Done
+[Summary]
+
+## Files Changed
+- `path/to/file` — [what changed]
+
+## Patterns Used
+[Design patterns, libraries]
+
+## Deviations from Plan
+[None, or list deviations]
+
+## Known Limitations / Tech Debt
+[None, or list]
+
+## Notes for Reviewer
+[Focus areas, uncertainties]

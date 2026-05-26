@@ -1,0 +1,30 @@
+{
+  "name": "pio-installer",
+  "version": "0.1.0",
+  "description": "Project Integration Orchestration — multi-agent workflow protocol for vibe coders",
+  "bin": {
+    "pio-installer": "./bin/install.js"
+  },
+  "scripts": {
+    "test": "node bin/install.js --dry-run"
+  },
+  "keywords": [
+    "claude-code",
+    "codex",
+    "ai-workflow",
+    "multi-agent",
+    "vibe-coding",
+    "code-review",
+    "prompt-engineering"
+  ],
+  "author": "Pierluigi Iodice",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pierluigi-Iodice/pio"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "private": true
+}

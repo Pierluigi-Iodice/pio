@@ -1,0 +1,16 @@
+# Test Plan — [feature name]
+**Author:** [agent] | **Date:** [timestamp]
+
+## Test Scenarios
+
+### TC-001 — [name]
+- **Type:** Unit | Integration | Regression | E2E | Edge Case | Error State
+- **Input:** [test input]
+- **Expected:** [expected result]
+- **Risk:** HIGH | MEDIUM | LOW
+
+## Regression Areas
+- [area]
+
+## Edge Cases
+- [case]

@@ -1,0 +1,25 @@
+# Plan — [feature name]
+**Author:** [agent] | **Date:** [timestamp] | **Version:** v1
+
+## Objective
+[What are we building and why?]
+
+## Scope
+**In:** [items]
+**Out:** [items]
+
+## Architecture / Approach
+[Technical approach, patterns, components affected]
+
+## Implementation Steps
+1. [step]
+2. [step]
+
+## Files / Components Affected
+- `path/to/file` — [what changes]
+
+## Risks & Unknowns
+- [item]
+
+## Definition of Done
+- [ ] [criterion]

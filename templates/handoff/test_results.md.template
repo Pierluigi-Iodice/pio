@@ -1,0 +1,14 @@
+# Test Results — [feature name]
+**Author:** [agent] | **Date:** [timestamp]
+
+## Summary
+
+| TC | Name | Result | Risk | Notes |
+|---|---|---|---|---|
+| TC-001 | [name] | PASS | HIGH | |
+
+**Total:** X passed / Y failed / Z regressions
+
+## Failure Details
+### TC-XXX
+**Expected:** / **Actual:** / **Steps to reproduce:**
