@@ -27,13 +27,15 @@
 | File | Status |
 |------|--------|
 | `handoff/plan.md` | — |
-| `handoff/review_plan_v*.md` | — |
+| `handoff/review_plan.md` | — |
 | `handoff/dev_log.md` | — |
-| `handoff/review_code_v*.md` | — |
+| `handoff/review_code.md` | — |
 | `handoff/test_plan.md` | — |
 | `handoff/test_results.md` | — |
-| `handoff/test_review_v*.md` | — |
+| `handoff/test_review.md` | — |
 | `handoff/greenlight.md` | — |
+
+> Previous versions are automatically archived as `plan_v1.md`, `review_plan_v1.md`, etc. when overwritten.
 
 ---
 

@@ -1,35 +1,36 @@
 ---
 name: "pio-fix"
-description: "Apply the latest unprocessed code review to the implementation"
+description: "Apply the code review in review_code.md to the implementation"
 metadata:
-  short-description: "Apply latest review_code_v*.md and append fix log to dev_log.md"
+  short-description: "Read review_code.md and apply fixes, append fix log to dev_log.md"
 ---
 
 <objective>
-Act as the Coder. Find the latest review_code_v*.md not yet processed, apply its fixes, and log which review was used.
+Act as the Coder. Read the code review file and apply its feedback to the implementation.
 </objective>
 
 <process>
-1. Read `pio/STATUS.md` — scan the Session Log for lines containing "pio-fix" or "/pio:fix" to see which review_code_v*.md files have already been processed.
-2. List all `review_code_v*.md` files in `pio/handoff/`.
-3. Identify the **latest unprocessed** review file.
-   - If all already processed: tell the user "No new code review to apply. Run `/prompts:pio-reviewcode` for a new cycle." Stop.
-4. Read the identified review file.
-5. Read `pio/roles/coder.md`
-6. Fix all **Critical Issues** first.
-7. Address **Minor Issues** — apply or note why skipped.
-8. Append a "Fix Log" section to `pio/handoff/dev_log.md`:
-   - Source review file (e.g. `review_code_v2.md`)
+1. Read `pio/roles/coder.md`
+2. Read `pio/STATUS.md` — note the Session Log entries.
+3. **Read `pio/handoff/review_code.md`** — this is the code review. Read it first.
+   - If it does not exist: tell the user "No code review found. Have the Reviewer run `/prompts:pio-reviewcode`, then `/prompts:pio-accept`." Stop.
+4. Dedup check: scan the Session Log.
+   - Find the timestamp of the most recent `/prompts:pio-accept` entry that mentions `review_code`.
+   - Find the timestamp of the most recent `/prompts:pio-fix` entry.
+   - If the `fix` entry is **more recent** than the `accept` entry → already applied. Tell the user "review_code.md has already been applied. Run `/prompts:pio-reviewcode` for a new review cycle." Stop.
+5. Fix all **Critical Issues** first.
+6. Address **Minor Issues** — apply or note why skipped.
+7. Append a "Fix Log" section to `pio/handoff/dev_log.md`:
    - Each issue: what was wrong, what was changed
    - Anything skipped and why
-9. Update `pio/STATUS.md`:
+8. Update `pio/STATUS.md`:
    - Change ONLY `**Step:**` and `**Last updated:**`
-   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Coder** ([agent]): /prompts:pio-fix — applied [review filename]. [1-line summary]`
-10. Tell the user: "Fixes applied. Run `/prompts:pio-reviewcode` for another pass, or `/prompts:pio-greenlight` if clean."
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Coder** ([agent]): /prompts:pio-fix — applied review_code.md. [1-line summary]`
+9. Tell the user: "Fixes applied. Run `/prompts:pio-reviewcode` for another pass, or `/prompts:pio-greenlight` if clean."
 </process>
 
 <constraints>
-- Never reprocess a review already in the Session Log.
+- Read `review_code.md` first — this is the review file, not the source code.
 - Always append to dev_log.md — never overwrite it.
-- Only update Phase/Step/Last updated in STATUS.md. Append to log — never overwrite it.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>

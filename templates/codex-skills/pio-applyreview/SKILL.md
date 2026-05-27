@@ -1,33 +1,40 @@
 ---
 name: "pio-applyreview"
-description: "Apply the latest unprocessed plan review to plan.md"
+description: "Apply the plan review in review_plan.md to plan.md"
 metadata:
-  short-description: "Apply latest review_plan_v*.md to update plan.md"
+  short-description: "Read review_plan.md and apply its feedback to plan.md"
 ---
 
 <objective>
-Act as the Planner. Find the latest review file not yet processed (by reading the Session Log), apply its feedback to plan.md, and log which review was used — preventing duplicate processing.
+Act as the Planner. Read the plan review file and apply its feedback to plan.md. Back up plan.md before modifying it.
 </objective>
 
 <process>
 1. Read `pio/roles/planner.md`
-2. Read `pio/STATUS.md` — scan the Session Log for lines containing "applyreview" to see which review_plan_v*.md files have already been processed.
-3. List all `review_plan_v*.md` files in `pio/handoff/`.
-4. Identify the **latest unprocessed** review (highest version not yet logged as processed).
-   - If all reviews already appear in the log: tell the user "No new review to apply. Run `/prompts:pio-review` for a new review cycle." Stop.
-5. Read the identified review file.
-6. Read `pio/handoff/plan.md` — note the current version in the header.
+2. Read `pio/STATUS.md` — note the Session Log entries.
+3. **Read `pio/handoff/review_plan.md`** — this is the review. Read it first, before anything else.
+   - If it does not exist: tell the user "No plan review found. Have the Reviewer run `/prompts:pio-review`, then `/prompts:pio-accept`." Stop.
+4. Dedup check: scan the Session Log.
+   - Find the timestamp of the most recent `/prompts:pio-accept` entry that mentions `review_plan`.
+   - Find the timestamp of the most recent `/prompts:pio-applyreview` entry.
+   - If the `applyreview` entry is **more recent** than the `accept` entry → this review has already been applied. Tell the user "review_plan.md has already been applied. Run `/prompts:pio-review` for a new review cycle." Stop.
+5. Read `pio/handoff/plan.md`.
+6. **Back up the current plan** before modifying:
+   - Count existing `plan_v*.md` files in `pio/handoff/`. Call this N.
+   - Copy `plan.md` to `plan_v{N+1}.md`.
 7. For each **Critical Issue**: apply the fix, or flag for PM discussion.
 8. For each **Minor Issue**: apply or note why skipped.
 9. For each **Open Question**: ask PM before proceeding.
-10. Rewrite `pio/handoff/plan.md` with changes applied. Increment version in header.
+10. Rewrite `pio/handoff/plan.md` with all changes applied. Increment version in header.
 11. Report: what changed, what was skipped and why, what needs PM discussion.
 12. Update `pio/STATUS.md`:
     - Change ONLY `**Step:**` and `**Last updated:**`
-    - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Planner** ([agent]): /prompts:pio-applyreview — applied [review filename] → plan.md updated to v[N]. [1-line summary]`
+    - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Planner** ([agent]): /prompts:pio-applyreview — applied review_plan.md → plan.md updated. [1-line summary]`
+13. Tell the user: run `/prompts:pio-review` for another pass, or `/prompts:pio-develop` if plan is approved.
 </process>
 
 <constraints>
-- Never reprocess a review already in the Session Log.
-- Only update Phase/Step/Last updated fields in STATUS.md. Append to log — never overwrite it.
+- Read `review_plan.md` first — never read `plan.md` before the review file.
+- Never modify plan.md without first backing it up as `plan_v{N+1}.md`.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>

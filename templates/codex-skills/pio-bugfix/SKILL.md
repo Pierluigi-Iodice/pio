@@ -1,33 +1,35 @@
 ---
 name: "pio-bugfix"
-description: "Apply the latest unprocessed test review to fix failures and regressions"
+description: "Apply the test review in test_review.md to fix failures and regressions"
 metadata:
-  short-description: "Apply latest test_review_v*.md to fix FAIL and REGRESSION items"
+  short-description: "Read test_review.md and fix all FAIL and REGRESSION items"
 ---
 
 <objective>
-Act as the Coder. Find the latest test_review_v*.md not yet processed, fix all FAIL and REGRESSION items (regressions first), and log which review was used.
+Act as the Coder. Read the test review file and fix all REGRESSION and FAIL items (regressions first).
 </objective>
 
 <process>
-1. Read `pio/STATUS.md` — scan the Session Log for "pio-bugfix" entries to see which test_review_v*.md files have been processed.
-2. List all `test_review_v*.md` files in `pio/handoff/`.
-3. Identify the **latest unprocessed** test review.
-   - If all already processed: tell the user "No new test review to apply. Run `/prompts:pio-runtest` to produce new results." Stop.
+1. Read `pio/STATUS.md` — note the Session Log entries.
+2. **Read `pio/handoff/test_review.md`** — this is the test review. Read it first.
+   - If it does not exist: tell the user "No test review found. Have the Reviewer run `/prompts:pio-reviewtest`, then `/prompts:pio-accept`." Stop.
+3. Dedup check: scan the Session Log.
+   - Find the timestamp of the most recent `/prompts:pio-accept` entry that mentions `test_review`.
+   - Find the timestamp of the most recent `/prompts:pio-bugfix` entry.
+   - If the `bugfix` entry is **more recent** than the `accept` entry → already applied. Tell the user "test_review.md has already been applied. Run `/prompts:pio-runtest` to produce new results." Stop.
 4. Fix all **REGRESSION** items first — highest priority.
 5. Fix all **FAIL** items.
 6. Append a "Bug Fix Log" section to `pio/handoff/dev_log.md`:
-   - Source review file (e.g. `test_review_v2.md`)
    - Each item fixed: what was wrong, what was changed
    - Any item not fixable and why
 7. Update `pio/STATUS.md`:
    - Change ONLY `**Step:**` and `**Last updated:**`
-   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Coder** ([agent]): /prompts:pio-bugfix — applied [review filename]. [1-line summary]`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Coder** ([agent]): /prompts:pio-bugfix — applied test_review.md. [1-line summary]`
 8. Tell the user: "Bug fixes applied. Re-run `/prompts:pio-runtest` to verify."
 </process>
 
 <constraints>
-- Never reprocess a review already in the Session Log.
+- Read `test_review.md` first — this is the test review, not test results.
 - Always append to dev_log.md — never overwrite.
-- Only update Phase/Step/Last updated in STATUS.md. Append to log — never overwrite it.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>

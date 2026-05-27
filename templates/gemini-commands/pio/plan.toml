@@ -1,7 +1,7 @@
 description = "Discuss a feature or task and write pio/handoff/plan.md"
 prompt = """
 <objective>
-Act as the Planner. Discuss the feature or task with the user, clarify requirements and constraints, then write the formal plan to pio/handoff/plan.md.
+Act as the Planner. Discuss the feature or task with the user, clarify requirements and constraints, then write the formal plan to pio/handoff/plan.md. Back up any existing plan.md before overwriting.
 </objective>
 
 <process>
@@ -9,19 +9,22 @@ Act as the Planner. Discuss the feature or task with the user, clarify requireme
 2. Read `pio/STATUS.md` — check current state.
 3. Ask the user to describe the feature or task to plan.
 4. Discuss until requirements, scope, and constraints are clear. Ask clarifying questions if needed.
-5. Write `pio/handoff/plan.md` using the template at `pio/handoff/plan.md.template`.
-   - Set version to v1 in the header.
+5. If `pio/handoff/plan.md` already exists (this is a re-plan):
+   - Count existing `plan_v*.md` backup files in `pio/handoff/`. Call this N.
+   - Rename the existing `plan.md` to `plan_v{N+1}.md` to preserve it.
+6. Write `pio/handoff/plan.md` using the template at `pio/handoff/plan.md.template`.
+   - Set version to v1 in the header (or increment if re-planning).
    - Include: objective, scope, constraints, approach, files to change, acceptance criteria, open questions.
-6. Update `pio/STATUS.md`:
+7. Update `pio/STATUS.md`:
    - Change ONLY **Phase:**, **Step:**, and **Last updated:**
-   - Set Phase = PLANNING, Step = "plan.md v1 written — awaiting /pio:review from Reviewer"
-   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Planner** ([agent]): /pio:plan — wrote plan.md v1. [1-line summary of feature]`
-7. Tell the user: "Plan written. Switch to your Reviewer agent and run `/pio:review`"
+   - Set Phase = PLANNING, Step = "plan.md written — awaiting /pio:review from Reviewer"
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Planner** ([agent]): /pio:plan — wrote plan.md` (add `(archived previous as plan_v{N+1}.md)` if backup was made)
+8. Tell the user: "Plan written. Switch to your Reviewer agent and run `/pio:review`"
 </process>
 
 <constraints>
 - Do not skip the discussion step. If requirements are unclear, ask before writing.
-- Write only to pio/handoff/plan.md and pio/STATUS.md.
+- Always back up an existing plan.md before overwriting.
 - Only update Phase/Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
 </constraints>
 """
