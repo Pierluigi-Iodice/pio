@@ -97,17 +97,48 @@ There is no enforcement — any agent can run any command at any time. The role 
 
 ## The PM is Always in Control
 
-PIO is **semi-automated by design**. Every handoff requires your explicit command:
+PIO is **semi-automated by design**. Every handoff requires your explicit command.
 
+**Planning loop:**
 ```
-[Claude Code]  /pio:plan                → generates plan.md
-[You]          read it, discuss
+[Claude Code]  /pio:plan                → discuss requirements, write plan.md
+[You]          read it, discuss with the team
 [Codex]        /prompts:pio-review      → reads plan.md, shows analysis on screen
 [You]          discuss, accept or request changes
-[Codex]        /prompts:pio-accept      → writes review_plan.md
-[Claude Code]  /pio:applyreview         → reads review, updates plan
-[Both]         /pio:greenlight          → planning approved
-               /prompts:pio-greenlight  → proceed to development
+[Codex]        /prompts:pio-accept      → saves review to review_plan.md
+[Claude Code]  /pio:applyreview         → reads review_plan.md, updates plan.md
+               (repeat review → accept → applyreview until clean)
+[Both]         /pio:greenlight          → planning approved, proceed to development
+               /prompts:pio-greenlight
+```
+
+**Development loop:**
+```
+[Claude Code]  /pio:develop             → implements from plan.md, writes dev_log.md
+[You]          review what was built
+[Codex]        /prompts:pio-reviewcode  → reads plan.md + dev_log.md + changed files
+                                           checks plan coverage AND code quality
+[You]          discuss, accept or request changes
+[Codex]        /prompts:pio-accept      → saves review to review_code.md
+[Claude Code]  /pio:fix                 → reads review_code.md, applies fixes
+               (repeat reviewcode → accept → fix until clean)
+[Both]         /pio:greenlight          → development approved, proceed to QA
+               /prompts:pio-greenlight
+```
+
+**QA & Testing loop:**
+```
+[Codex]        /prompts:pio-testplan    → reads plan.md + dev_log.md, generates test plan
+[You]          review the scenarios
+[Codex]        /prompts:pio-accept      → saves test_plan.md
+[Claude Code]  /pio:runtest             → executes every scenario, writes test_results.md
+[Codex]        /prompts:pio-reviewtest  → classifies PASS / FAIL / REGRESSION
+[You]          discuss
+[Codex]        /prompts:pio-accept      → saves review to test_review.md
+[Claude Code]  /pio:bugfix              → reads test_review.md, fixes failures
+               (repeat runtest → reviewtest → accept → bugfix until all pass)
+[Both]         /pio:greenlight          → QA approved, ready to ship
+               /prompts:pio-greenlight
 ```
 
 Nothing happens without your command. You are the PM.

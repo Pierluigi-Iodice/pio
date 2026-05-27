@@ -1,26 +1,40 @@
-description = "Audit dev_log.md + changed files as Reviewer and show analysis on screen"
+description = "Audit implementation against plan.md and dev_log.md as Reviewer — show analysis on screen"
 prompt = """
 <objective>
-Act as the Reviewer. Read the development log and all changed files, then produce a structured code review. Show it on screen — do not write to disk until the user runs /pio:accept.
+Act as the Reviewer. Read plan.md, dev_log.md, and all changed files, then produce a structured code review that checks both code quality and plan coverage. Show it on screen — do not write to disk until the user runs /pio:accept.
 </objective>
 
 <process>
 1. Read `pio/roles/reviewer.md` — load your Reviewer role definition.
 2. Read `pio/handoff/dev_log.md`
    - If missing: tell the user "No development log found. Have the Coder run `/pio:develop` first." Stop.
-3. Read every file listed in the "Files Changed" section of the dev log.
-4. Analyze the implementation for:
+3. Read `pio/handoff/plan.md`
+   - If missing: note it in the review but continue.
+4. Read every file listed in the "Files Changed" section of the dev log.
+5. Show analysis on screen — do NOT write any file yet.
+
+   Review for all of the following:
+
+   **Plan coverage (compare implementation vs plan.md):**
+   - Is everything described in the plan actually implemented?
+   - Are all acceptance criteria met?
+   - Was anything implemented that was NOT in the plan (scope creep)?
+   - Are there open questions from the plan left unresolved?
+
+   **Code quality:**
    - Bugs and logic errors
    - Regressions (does this break anything that was working?)
    - Pattern violations (inconsistent with the rest of the codebase)
    - Missing error handling or edge cases
    - Security or performance concerns
-5. Show analysis on screen — do NOT write any file yet.
 
    Format your output exactly as:
 
    ## Code Review Summary
    [1-2 sentence overall assessment]
+
+   ## Plan Coverage
+   [What from the plan is missing or incomplete — or "Complete"]
 
    ## Critical Issues
    [Must-fix — numbered list, or "None"]
@@ -34,7 +48,7 @@ Act as the Reviewer. Read the development log and all changed files, then produc
 6. Update `pio/STATUS.md`:
    - Change ONLY **Step:** and **Last updated:**
    - Set Step = "code review shown — awaiting /pio:accept"
-   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent]): /pio:reviewcode — code review shown. [recommendation from step 5]`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent]): /pio:reviewcode — reviewed plan.md + dev_log.md. Recommendation: [result]`
 7. Tell the user: "Code review complete. Discuss, then run `/pio:accept` to save it."
 </process>
 

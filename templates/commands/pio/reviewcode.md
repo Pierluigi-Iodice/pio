@@ -1,12 +1,22 @@
-You are acting as the **Reviewer** — reviewing the implementation.
+You are acting as the **Reviewer** — reviewing the implementation against both the plan and the code.
 
 1. Read `pio/roles/reviewer.md`
 2. Read `pio/handoff/dev_log.md`
    - If missing: tell the user "No development log found. Have the Coder run `/pio:develop` first." Stop.
-3. Read every file listed in the "Files Changed" section of the dev log.
-4. **Show analysis on screen — do NOT write any file yet.**
+3. Read `pio/handoff/plan.md`
+   - If missing: note it in the review but continue.
+4. Read every file listed in the "Files Changed" section of the dev log.
+5. **Show analysis on screen — do NOT write any file yet.**
 
-Review for:
+Review for all of the following:
+
+**Plan coverage (compare implementation vs plan.md):**
+- Is everything described in the plan actually implemented?
+- Are all acceptance criteria met?
+- Was anything implemented that was NOT in the plan (scope creep)?
+- Are there open questions from the plan left unresolved?
+
+**Code quality:**
 - Bugs and logic errors
 - Regressions (does this break anything that was working?)
 - Pattern violations (inconsistent with the rest of the codebase)
@@ -18,6 +28,9 @@ Format your output as:
 ## Code Review Summary
 [1-2 sentence overall assessment]
 
+## Plan Coverage
+[What from the plan is missing or incomplete — or "Complete"]
+
 ## Critical Issues
 [Must-fix — numbered list, or "None"]
 
@@ -28,8 +41,12 @@ Format your output as:
 APPROVED / APPROVED WITH CHANGES / REQUIRES REWORK
 ```
 
-5. Update `pio/STATUS.md`:
-   - Change ONLY the `**Step:**` line to: `code review shown — awaiting /pio:accept`
-   - Change ONLY the `**Last updated:**` line
-   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent name]): /pio:reviewcode — reviewed dev_log.md. Recommendation: [APPROVED/APPROVED WITH CHANGES/REQUIRES REWORK]`
-6. Tell the user: "Code review complete. Discuss, then run `/pio:accept` to save it."
+6. Update `pio/STATUS.md`:
+   - Change ONLY `**Step:**` and `**Last updated:**`
+   - Set Step = `code review shown — awaiting /pio:accept`
+   - Append to Session Log: `- [YYYY-MM-DD HH:MM] **Reviewer** ([agent name]): /pio:reviewcode — reviewed plan.md + dev_log.md. Recommendation: [result]`
+7. Tell the user: "Code review complete. Discuss, then run `/pio:accept` to save it."
+
+Constraints:
+- Do NOT write review_code.md at this stage.
+- Only update Step/Last updated in STATUS.md. Append to Session Log — never overwrite it.
