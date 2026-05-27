@@ -62,7 +62,7 @@ ${bold('PIO -- Project Integration Orchestration')}
 
 ${bold('Usage:')}
   npx pio-installer            Install PIO into the current directory
-  npx pio-installer --force    Overwrite existing PIO installation
+  npx pio-installer --force    Update commands/roles/docs (never touches STATUS.md)
   npx pio-installer --dry-run  Show what would happen without touching anything
   npx pio-installer --help     Show this help
 
@@ -122,6 +122,22 @@ function copyFile(src, dest) {
   log.created(r);
 }
 
+// Like copyFile but NEVER overwrites an existing file — even with --force.
+// Use for user-maintained files (STATUS.md, AGENTS.md) that contain session state.
+function copyFileNeverOverwrite(src, dest) {
+  const r = relPath(dest);
+  if (DRY_RUN) {
+    log.dry(r);
+    return;
+  }
+  if (fs.existsSync(dest)) {
+    log.skipped(r);
+    return;
+  }
+  fs.copyFileSync(src, dest);
+  log.created(r);
+}
+
 // ─── Installer ────────────────────────────────────────────────────────────────
 function installPio() {
 
@@ -133,7 +149,7 @@ function installPio() {
       console.log(`       Without ${bold('--force')}, nothing would be done.\n`);
     } else {
       console.log(`\n${yellow(WARN)} PIO is already installed in this directory.`);
-      console.log(`    Run with ${bold('--force')} to overwrite the existing installation.\n`);
+      console.log(`    Run with ${bold('--force')} to update commands, roles, and docs.\n`);
     }
     process.exit(0);
   }
@@ -151,7 +167,12 @@ function installPio() {
   createDir(path.join(PIO_DIR, 'archive'));
 
   // 2 -- pio/ content files
-  for (const file of ['STATUS.md', 'COMMANDS.md', 'HOW_IT_WORKS.md', 'QUICKSTART.md']) {
+  // STATUS.md is user-maintained (contains session history) — never overwrite.
+  copyFileNeverOverwrite(
+    path.join(TEMPLATES_DIR, 'STATUS.md'),
+    path.join(PIO_DIR, 'STATUS.md')
+  );
+  for (const file of ['COMMANDS.md', 'HOW_IT_WORKS.md', 'QUICKSTART.md']) {
     copyFile(
       path.join(TEMPLATES_DIR, file),
       path.join(PIO_DIR, file)
@@ -187,8 +208,8 @@ function installPio() {
     path.join(PIO_DIR, 'archive', 'README.md')
   );
 
-  // 6 -- AGENTS.md (Codex context — created only if missing, never merged into existing)
-  copyFile(
+  // 6 -- AGENTS.md (Codex context — created only if missing, never overwritten)
+  copyFileNeverOverwrite(
     path.join(TEMPLATES_DIR, 'AGENTS.md'),
     path.join(TARGET_DIR, 'AGENTS.md')
   );
