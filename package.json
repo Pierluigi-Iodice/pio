@@ -1,6 +1,6 @@
 {
   "name": "pio-installer",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Project Integration Orchestration — multi-agent workflow protocol for vibe coders",
   "bin": {
     "pio-installer": "bin/install.js"

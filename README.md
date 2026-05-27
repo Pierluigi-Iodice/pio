@@ -37,6 +37,33 @@ The mechanism is simple: two different AI perspectives, zero shared context, str
 
 ---
 
+## Token Savings & Fresh Context
+
+Because PIO stores all state in files, you can **start a fresh conversation at any point** without losing the thread of your work.
+
+**The pattern:**
+```
+[long session]   /clear                  → context reset, tokens back to zero
+[new session]    /pio:status             → agent reads STATUS.md, plan.md, dev_log.md
+                                           and knows exactly where you left off
+[continue]       /pio:develop            → picks up from the approved plan
+```
+
+This has two compounding benefits:
+
+**1. Lower token cost per session.**  
+Each agent loads only the files it needs for its role — not the entire conversation history. A Reviewer running `/pio:reviewcode` reads `plan.md` + `dev_log.md` + changed files. That's it. No re-feeding 50 rounds of chat.
+
+**2. No context drift.**  
+Long conversations accumulate noise: decisions reversed, approaches abandoned, half-finished thoughts. A fresh agent reading a clean `plan.md` has a more accurate picture of the current state than an agent who sat through the whole discussion.
+
+**3. Resilience to `/clear` and crashes.**  
+If you clear the context, switch machines, or come back after a week, nothing is lost. Run `/pio:status` and every agent — in any tool — can reconstruct the full session state from the files in `pio/handoff/`.
+
+> The handoff files are the memory. The conversation is disposable.
+
+---
+
 ## Install
 
 ```bash
